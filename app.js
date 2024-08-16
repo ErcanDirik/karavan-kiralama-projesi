@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -21,6 +22,10 @@ app.post('/generate-pdf', (req, res) => {
 
     res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
     res.setHeader('Content-type', 'application/pdf');
+
+    // Türkçe karakterler için fontu yükleme
+    const fontPath = path.join(__dirname, 'public/fonts/Roboto-Regular.ttf');
+    doc.font(fontPath);
 
     doc.text(`Ad Soyad: ${name}`, 50, 50);
     doc.text(`TC Kimlik No: ${tc}`, 50, 70);
