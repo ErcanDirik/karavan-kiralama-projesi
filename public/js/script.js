@@ -30,6 +30,40 @@ window.onload = function() {
 
     document.getElementById('rentalForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert("Form gönderildi. PDF oluşturulacak.");
+    
+        const name = document.getElementById('name').value;
+        const tc = document.getElementById('tc').value;
+        const address = document.getElementById('address').value;
+        const phone = document.getElementById('phone').value;
+        const canvas = document.getElementById('signaturePad');
+        const signature = canvas.toDataURL();
+    
+        const formData = {
+            name: name,
+            tc: tc,
+            address: address,
+            phone: phone,
+            signature: signature
+        };
+    
+        fetch('/generate-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sozlesme.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => console.error('PDF oluşturulurken hata oluştu:', error));
     });
+    
 };
