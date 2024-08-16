@@ -3,10 +3,15 @@ window.onload = function() {
     const ctx = canvas.getContext('2d');
     let drawing = false;
 
+    // Fare ve dokunmatik ekran olaylarını ayarlama
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
+
+    canvas.addEventListener('touchstart', startDrawingTouch);
+    canvas.addEventListener('touchmove', drawTouch);
+    canvas.addEventListener('touchend', stopDrawing);
 
     function startDrawing(e) {
         drawing = true;
@@ -20,6 +25,27 @@ window.onload = function() {
         ctx.stroke();
     }
 
+    function startDrawingTouch(e) {
+        e.preventDefault();
+        drawing = true;
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousedown", {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    }
+
+    function drawTouch(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousemove", {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    }
+
     function stopDrawing() {
         drawing = false;
     }
@@ -30,14 +56,13 @@ window.onload = function() {
 
     document.getElementById('rentalForm').addEventListener('submit', function(e) {
         e.preventDefault();
-    
+
         const name = document.getElementById('name').value;
         const tc = document.getElementById('tc').value;
         const address = document.getElementById('address').value;
         const phone = document.getElementById('phone').value;
-        const canvas = document.getElementById('signaturePad');
         const signature = canvas.toDataURL();
-    
+
         const formData = {
             name: name,
             tc: tc,
@@ -45,7 +70,7 @@ window.onload = function() {
             phone: phone,
             signature: signature
         };
-    
+
         fetch('/generate-pdf', {
             method: 'POST',
             headers: {
@@ -65,5 +90,4 @@ window.onload = function() {
         })
         .catch(error => console.error('PDF oluşturulurken hata oluştu:', error));
     });
-    
 };

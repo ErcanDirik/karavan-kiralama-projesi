@@ -13,6 +13,8 @@ body {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    width: 400px;
 }
 
 h1 {
@@ -35,9 +37,16 @@ input, canvas, button {
     font-size: 16px;
 }
 
+input, button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 canvas {
     border: 1px solid #ccc;
     margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 button {
@@ -50,4 +59,17 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+/* Mobil cihazlar için */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    input, button, canvas {
+        padding: 8px;
+        font-size: 14px;
+    }
 }
